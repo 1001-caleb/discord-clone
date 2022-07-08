@@ -9,6 +9,7 @@ const firestore = getFirestore(firebaseApp)
 export default function ChatScreen({ canalActivo, usuario }) {
   const [inputMensaje, setInputMensaje] = useState('');
   const [listaMensajes, setListaMensajes] = useState([]);
+  const anchor = useRef();
 
   function enviarMensaje(e) {
     e.preventDefault();
@@ -23,6 +24,7 @@ export default function ChatScreen({ canalActivo, usuario }) {
 
     setInputMensaje("");
     getListaMensajes();
+    anchor.current.scrollIntoView({ behavior: "smooth" });
   }
 
   async function getListaMensajes() {
@@ -53,6 +55,7 @@ export default function ChatScreen({ canalActivo, usuario }) {
             })
           : null
         }
+          <div ref={anchor} style={{ marginBottom: "75px" }}></div>
       </div>
 
       <div className='chat__input'>
