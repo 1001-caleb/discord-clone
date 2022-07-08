@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef } from 'react'
 import { AddCircle, CreditCard, Gif, EmojiEmotions } from '@material-ui/icons'
 import EncabezadoChat from '../components/EncabezadoChat';
 import firebaseApp from '../firebase/credenciales';
-import {getFirestore, doc, setDoc} from 'firebase/firestore'
+import { getFirestore, doc, setDoc, collection, getDocs } from 'firebase/firestore'
+import Mensaje from '../components/Mensaje';
 
 const firestore = getFirestore(firebaseApp)
 export default function ChatScreen({ canalActivo, usuario }) {
   const [inputMensaje, setInputMensaje] = useState('');
+  const [listaMensajes, setListaMensajes] = useState([]);
 
-  function enviarMensaje(e){
+  function enviarMensaje(e) {
     e.preventDefault();
     const docuRef = doc(firestore, `canales/${canalActivo}/mensajes/${new Date().getTime()}`)
 
@@ -20,13 +22,37 @@ export default function ChatScreen({ canalActivo, usuario }) {
     });
 
     setInputMensaje("");
+    getListaMensajes();
   }
+
+  async function getListaMensajes() {
+    const mensajesArr = []
+    const coleccionRef = collection(firestore, `canales/${canalActivo}/mensajes`);
+    const mensajesCifrados = await getDocs(coleccionRef);
+    mensajesCifrados.forEach(mensaje => {
+      mensajesArr.push(mensaje.data());
+    });
+
+    setListaMensajes([...mensajesArr])
+  }
+
+  useEffect(() => {
+    getListaMensajes();
+  }, [canalActivo]);
 
   return (
     <div className='chat'>
-      <EncabezadoChat nombreCanal={ canalActivo } />
+      <EncabezadoChat nombreCanal={canalActivo} />
       <div className='chat__messages'>
-
+        {
+          listaMensajes ?  
+            listaMensajes.map(mensaje =>{
+              return (
+                <Mensaje mensajeFirebase={mensaje}/>
+              )
+            })
+          : null
+        }
       </div>
 
       <div className='chat__input'>
@@ -36,7 +62,7 @@ export default function ChatScreen({ canalActivo, usuario }) {
           <input type='text'
             disabled={canalActivo ? false : true} value={inputMensaje}
             onChange={(e) => setInputMensaje(e.target.value)}
-            placeholder= {`Enviar mensaje a ${canalActivo || ''}`}>
+            placeholder={`Enviar mensaje a ${canalActivo || ''}`}>
 
           </input>
           <button disabled={canalActivo ? false : true} className='chat__inputButton' type='submit'>Enviar mensaje</button>
