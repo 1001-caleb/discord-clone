@@ -6,7 +6,7 @@ import firebaseApp from '../firebase/credenciales'
 import { getFirestore, doc, setDoc, collection, getDocs } from 'firebase/firestore'
 const firestore = getFirestore(firebaseApp)
 
-export default function SideBar({ usuarioGlobal }) {
+export default function SideBar({ usuarioGlobal, setCanalActivo }) {
   const [listaCanales, setListaCanales] = useState([])
 
   async function getCanales() {
@@ -35,6 +35,7 @@ export default function SideBar({ usuarioGlobal }) {
   useEffect(() => {
     getCanales()
   }, [])
+
   return (
     <div className='sidebar'>
       <div className='sidebar__top'>
@@ -54,9 +55,12 @@ export default function SideBar({ usuarioGlobal }) {
 
         <div className='sidebar__channelsList'>
           {
-            listaCanales ? listaCanales.map(canal => {
+            listaCanales 
+              ? listaCanales.map(canal => {
               return (
-                <CanalEnSideBar nombre={canal.nombre} id={canal.id} key={canal.id} />
+                <div onClick={() => setCanalActivo(canal.nombre)}>
+                  <CanalEnSideBar nombre={canal.nombre} id={canal.id} key={canal.id} />
+                </div>
               )
             })
               : null

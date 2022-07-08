@@ -5,6 +5,7 @@ import {getAuth, GoogleAuthProvider, signInWithRedirect} from 'firebase/auth'
 
 const auth = getAuth(firebaseApp);
 const gProvider = new GoogleAuthProvider();
+
 export default function login() {
 
     function loginConGoogle(){

@@ -10,6 +10,7 @@ const auth = getAuth(firebaseApp);
 
 function App() {
   const [usuarioGlobal, setUsuarioGlobal] = useState(null);
+  const [canalActivo, setCanalActivo] = useState(null);
 
   onAuthStateChanged(auth, (usuarioFirebase) => {
     // revisar si se inició o cerró sesión
@@ -22,11 +23,15 @@ function App() {
   })
 
   return (
-    <div>
+    <div className="app">
       {usuarioGlobal ? (
         <>
           {" "}
-          <SideBar usuarioGlobal={usuarioGlobal}/> <ChatScreen />{" "} </>)
+          <SideBar
+            usuarioGlobal={ usuarioGlobal }
+            setCanalActivo={ setCanalActivo }
+          />
+          <ChatScreen canalActivo={ canalActivo } />{" "} </>)
         : (
           <Login />
         )}
