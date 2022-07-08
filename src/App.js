@@ -31,7 +31,7 @@ function App() {
             usuarioGlobal={ usuarioGlobal }
             setCanalActivo={ setCanalActivo }
           />
-          <ChatScreen canalActivo={ canalActivo } />{" "} </>)
+          <ChatScreen usuario={usuarioGlobal} canalActivo={ canalActivo } />{" "} </>)
         : (
           <Login />
         )}
